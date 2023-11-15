@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>My todo </title>
+  </head>
+  <body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-7 mx-auto">
+                <h1 class="text-center mt-5">My Todo App</h1>
+                <form action="" class="bg-warning p-3">
+                    <div class="mb-3">
+                        <label for="">My Task</label>
+                        <input type="text" id="task"  class="form-control my-3">
+                        <div class="btn-holder">
+                            <button class=" btn btn-danger" id="todo-btn" type="submit">Add Task</button>
+                        </div>
+                    </div>
+                </form>
+                <h1 class="text-center mt-5">
+                        My Todos
+                </h1>
+                <table class="table table-bordered bg-warning ">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+ 
+    <script>
+        showTodos();
+        var task = document.querySelector('#task');
+        var todoBtn = document.querySelector('#todo-btn');
+      
+        todoBtn.addEventListener('click', function(){
+            if(localStorage.getItem('todos') == null){
+                localStorage.setItem('todos', '[]');
+
+               var todos = JSON.parse(localStorage.getItem('todos'));
+               todos.push(task.value);
+               localStorage.setItem('todos', JSON.stringify(todos));
+           }else{
+            var todos = JSON.parse(localStorage.getItem('todos'));
+            todos.push(task.value);
+            localStorage.setItem('todos', JSON.stringify(todos));
+           }
+        });
+
+       function showTodos()
+        {
+            var todos = JSON.parse(localStorage.getItem('todos'));
+            var display = '';
+            for(todo in todos)
+            {
+                display += `
+                <tr>
+                    <td> ${todos[todo]} </td>
+                    <td>
+                        <button class="btn btn-primary" onclick = "editTodo(${todo})"> &#9998; </button>
+                        <button class="btn btn-danger" onclick = "deleteTodo(${todo})"> - </button>
+                    </td>
+                </tr>
+                
+                `;
+            }
+
+            var tbody = document.querySelector('#tbody');
+            tbody.innerHTML = display;
+        } 
+
+        function deleteTodo(id)
+        {
+            if(confirm('Are you sure want to delete this task!')){
+                var todos = JSON.parse(localStorage.getItem('todos'));
+                todos.splice(id, 1);
+                localStorage.setItem('todos', JSON.stringify(todos));
+                showTodos();
+            }
+        }
+        function editTodo(id)
+        {
+            task.value = JSON.parse(localStorage.getItem('todos'))[id];
+           var btnHolder = document.querySelector('.btn-holder');
+           btnHolder.innerHTML = `
+           <button class="btn btn-success" onclick = "updateTodo(${id})"> Update </button>
+           `;
+            
+        }
+       function updateTodo(id){
+        var todos = JSON.parse(localStorage.getItem('todos'));
+        todos[id]=task.value;
+        localStorage.setItem('todos', JSON.stringify(todos));
+        showTodos(); 
+       }
+    </script>
+    
+     
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  </body>
+</html>
